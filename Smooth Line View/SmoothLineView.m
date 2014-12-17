@@ -79,6 +79,11 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
 }
 
 - (void)drawRect:(CGRect)rect {
+    
+    if (_isUndoRedoMode)
+    {
+        [_snapshot drawAtPoint:CGPointMake(0, 0)];
+    }
   // clear rect
   [self.backgroundColor set];
   UIRectFill(rect);
@@ -158,6 +163,14 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 	CGPathRelease(subpath);
 
   [self setNeedsDisplayInRect:drawBox];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    UIGraphicsBeginImageContext(self.frame.size);
+    [self.layer renderInContext:UIGraphicsGetCurrentContext()];
+    _snapshot = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
 }
 
 #pragma mark interface

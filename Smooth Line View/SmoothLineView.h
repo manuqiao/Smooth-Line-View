@@ -29,6 +29,11 @@
 
 
 @interface SmoothLineView : UIView 
+{
+    UIImage *_snapshot;
+    BOOL _isUndoRedoMode;
+}
+
 
 @property (nonatomic, strong) UIColor *lineColor;
 @property (nonatomic, assign) CGFloat lineWidth;
