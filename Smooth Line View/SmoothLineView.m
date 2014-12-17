@@ -82,12 +82,26 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
 
 - (void)undoTapped:(id)sender
 {
-    
+    [self.undoManager undo];
+    _isUndoRedoMode = YES;
+    [self setNeedsDisplay];
 }
 
 - (void)redoTapped:(id)sender
 {
+    [self.undoManager redo];
+    _isUndoRedoMode = YES;
+    [self setNeedsDisplay];
+}
+
+- (void)setPath:(CGMutablePathRef)path
+{
+    CGPathRef tmpPath = CGPathCreateCopy(_path);
+    [[self.undoManager prepareWithInvocationTarget:self] setPath:(__bridge NSString *)tmpPath];
+    [self.undoManager setActionName:@"a"];
     
+    _path = CGPathCreateMutableCopy(path);
+    CGPathRelease(path);
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -121,11 +135,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
 }
 
 - (void)drawRect:(CGRect)rect {
-    
-    if (_isUndoRedoMode)
-    {
-        [_snapshot drawAtPoint:CGPointMake(0, 0)];
-    }
   // clear rect
   [self.backgroundColor set];
   UIRectFill(rect);
@@ -155,6 +164,9 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 #pragma mark Touch event handlers
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    [self setPath:_path];
+    
   UITouch *touch = [touches anyObject];
 
   // initializes our point records to current location
@@ -205,14 +217,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
 	CGPathRelease(subpath);
 
   [self setNeedsDisplayInRect:drawBox];
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    UIGraphicsBeginImageContext(self.frame.size);
-    [self.layer renderInContext:UIGraphicsGetCurrentContext()];
-    _snapshot = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
 }
 
 #pragma mark interface
