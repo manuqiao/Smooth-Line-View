@@ -50,6 +50,46 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
 
 #pragma mark UIView lifecycle methods
 
+- (void)addButton
+{
+    UIButton *undo = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIButton *redo = [UIButton buttonWithType:UIButtonTypeCustom];
+    [undo setTitle:@"undo" forState:UIControlStateNormal];
+    [redo setTitle:@"redo" forState:UIControlStateNormal];
+    
+    [undo setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [redo setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    
+    [undo sizeToFit];
+    [redo sizeToFit];
+    
+    [undo addTarget:self action:@selector(undoTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [redo addTarget:self action:@selector(redoTapped:) forControlEvents:UIControlEventTouchUpInside];
+    
+    CGRect frame = undo.frame;
+    frame.origin.x = 0;
+    frame.origin.y = 0;
+    undo.frame = frame;
+    
+    frame = redo.frame;
+    frame.origin.x = undo.frame.size.width;
+    frame.origin.y = 0;
+    redo.frame = frame;
+    
+    [self addSubview:undo];
+    [self addSubview:redo];
+}
+
+- (void)undoTapped:(id)sender
+{
+    
+}
+
+- (void)redoTapped:(id)sender
+{
+    
+}
+
 - (id)initWithCoder:(NSCoder *)aDecoder {
   self = [super initWithCoder:aDecoder];
   
@@ -59,6 +99,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     _lineWidth = DEFAULT_WIDTH;
     _lineColor = DEFAULT_COLOR;
     _empty = YES;
+      [self addButton];
   }
   
   return self;
@@ -73,6 +114,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
     _lineWidth = DEFAULT_WIDTH;
     _lineColor = DEFAULT_COLOR;
     _empty = YES;
+      [self addButton];
   }
   
   return self;
